@@ -43,7 +43,7 @@
 
         console.log(filtered_data)
         
-        const xScale = d3.scaleTime().domain(d3.extent(filtered_data,d=>d['Date'])).range([0+margin,800-margin]);
+        const xScale = d3.scaleTime().domain(d3.extent(filtered_data,d=>d['Date'])).range([20+margin,800-margin]);
         const yScale = d3.scaleLinear().domain(d3.extent(filtered_data,d=>d['Population'])).range([600-margin,0+margin]);
 
 
@@ -58,8 +58,8 @@
         const xAxis = d3.axisBottom().scale(xScale);
         const yAxis = d3.axisLeft().scale(yScale);
         
-        svg.append("g").attr("transform", "translate(0,600").call(xAxis);
-        svg.append('g').attr("transform", "translate(0,0)").call(yAxis);
+        svg.append("g").attr("transform", 'translate(-8,580)').call(xAxis);
+        svg.append('g').attr("transform", "translate(50,20)").call(yAxis);
 
         })
     </script>
