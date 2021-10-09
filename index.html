@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun with D3</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        svg {
+            width: 800px;
+            height: 600px;
+            background-color: antiquewhite;
+            display: block;
+            margin: auto;
+
+        }
+    </style>
+
+</head>
+<body>
+    <div id="canvas"></div>
+    <script>
+
+        const url = 'https://raw.githubusercontent.com/umassdgithub/Sample_Data/main/MASS_Resident_Population_2010-2019.csv';
+        d3.csv(url).then(data => {
+           
+           let filtered_data = data.filter(d=> {
+               return d['GEO_ID']=="0500000US25001"
+           })
+           
+           filtered_data = filtered_data.map(d=> {
+               return { 
+                   Name: d.NAME.split(",")[0],
+                   Population: +d.POP,
+                   Date: new Date(d.DATE_CODE.split(" ")[0])}
+           })
+            //console.log(filtered_data)
+        
+
+        const margin = 40;    
+        let svg = d3.select('body').append('svg')
+
+        console.log(filtered_data)
+        
+        const xScale = d3.scaleTime().domain(d3.extent(filtered_data,d=>d['Date'])).range([0+margin,800-margin]);
+        const yScale = d3.scaleLinear().domain(d3.extent(filtered_data,d=>d['Population'])).range([600-margin,0+margin]);
+
+
+        svg.selectAll('marker')
+            .data(filtered_data)
+            .enter()
+            .append('circle')
+            .attr('cx', d=>xScale(d.Date))
+            .attr('cy', d=>yScale(d.Population))
+            .attr('r',4)
+
+        const xAxis = d3.axisBottom().scale(xScale);
+        const yAxis = d3.axisLeft().scale(yScale);
+        
+        svg.append("g").attr("transform", "translate(0,600").call(xAxis);
+        svg.append('g').attr("transform", "translate(0,0)").call(yAxis);
+
+        })
+    </script>
+</body>
+</html>
