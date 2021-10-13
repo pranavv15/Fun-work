@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"  initial-scale=1.0>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <title>Scatter Plot with D3</title>
+    <style>
+        svg {
+            background-color: bisque;
+            /* margin: 0 auto; */
+        }
+
+        #tooltip {
+            padding: 5px;
+            width: 80px;
+            position: absolute;
+            opacity: .7;
+            background-color: azure;
+            font-family: sans-serif;
+            font-size: 10pt;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="tooltip"></div>
+    
+    
+    <!-- //  3. Add SVG element to HTML/body -->
+    <svg width = "800px" height = "600px" ></svg>
+    
+    
+    <script>
+       
+       // <!-- 1. Prepare the Data and load it using a direct link or an API 
+    const url = '/countries of the world.csv'
+
+    //  2. Load and Process Data : d3.csv(datalink).then((data)=> {}) 
+    d3.csv(url, d=> {
+        return {
+        Country: d["Country"].toString().trim(),
+        GDP: +d["GDP ($ per capita)"],
+        Literacy: +d["Literacy (%)"].toString().replace(",","."),
+        Population: +d.Population,
+        Region: d.Region.toString().trim(),
+        Area: +d["Area (sq. mi.)"]
+        }
+
+    }).then(data=>{
+        console.log(data)
+        const svg = d3.select("svg");
+        const margin = {top: 50, bottom: 50, left: 70, right: 50};
+
+        let height = 600;
+        let width = 800;
+
+        //  4. Make Scaling Function for xAxis, yAxis, radius and color
+
+        const xScale = d3.scaleSqrt()
+                            .domain(d3.extent(data, d=> d.GDP))
+                            .range([margin.left, width-margin.right]);
+
+        const yScale = d3.scaleLog()
+                            .domain(d3.extent(data, d=> d.Population))
+                            .range([height-margin.bottom,margin.top]);
+
+        const rScale = d3.scaleSqrt()
+                            .domain(d3.extent(data, d=> d.Literacy))
+                            .range([3,8]);
+
+
+        let colRegion = data.map(d=>d.Region);
+        let setRegion = new Set(colRegion)
+        let arrayRegion = [... setRegion];
+
+        //console.log(arrayRegion)
+
+        const regions = d3.scaleOrdinal()
+                            .domain(arrayRegion)            // what foes this domain and range do actually??
+                            .range(d3.schemeCategory10)
+
+        
+        //  5. Bind data to SVG elements
+
+        let scatter = svg.append("g").attr("class","scatter");  // what did we do here??
+
+        scatter.selectAll('.dot')   // What is this??
+                .data(data)
+                .enter()
+                .append('circle')
+                .attr("cx",d=>xScale(d.GDP))
+                .attr("cy", d=>yScale(d.Population))
+                .attr('r',d=>rScale(d.Literacy))
+                .attr('fill',d=>regions(d.Region))
+                .attr("opacity",0.5)
+                .on("mouseover",(m,d) => {
+                    //console.log(m)
+                    //console.log(d)
+                    d3.select("#tooltip")
+                        .style("top",`${m.clientY}px`)
+                        .style("left",`${m.clientX}px`)
+                        .text(d.Country)
+                })
+
+
+        scatter.append("g")  // why do we append this and what is this
+                .attr("transform",`translate(0,${height-margin.bottom})`) // what is this attribute?
+                .call(d3.axisBottom().scale(xScale))
+
+        scatter.append("g")
+                .attr("transform",`translate(${margin.left},0)`)
+                .call(d3.axisLeft().scale(yScale))
+    })
+    
+    
+    //  6. Use Data and Scaling functions to add and position markers 
+    //  7. Add tooltip 
+    //  8. Style it 
+    </script>
+    
+</body>
+</html>
