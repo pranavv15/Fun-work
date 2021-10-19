@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+    
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+    
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+<style>
+    #container {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+    }
+</style>
+<script src="token.js"></script>
+
+</head>
+<body>
+<div id="container"></div>
+<script>
+    d3.json("Sample_Data-main/MA_GeoJSON.json").then(data => {
+    
+    let counties = [... new Set(data.features.map(d => d["properties"]["FIPS_STCO"]))]
+    const {DeckGL, GeoJsonLayer} = deck;
+    const geojsonLayer = new GeoJsonLayer ({                //creating the layers
+        data: data,
+        stroked: true,
+        filled: true,
+        lineWidthMinPixels: 0.5,
+        getLineColor: [0,0,0],
+        getFillColor: d => color(d["properties"]["FIPS_STCO"]),
+        opacity: 0.8
+    })
+    new DeckGL({                        //rendering the data
+        mapboxApiAccessToken: token,
+        mapStyle:'mapbox://styles/mapbox/streets-v11',
+        container: "container",         // the visualization should be contained inside this
+        initialViewState : {            //after the data is rendered, this helps us decide what our initial point of view is
+            longitude: -71.6,
+            latitude: 42,                //find longitude and latitude using bbox finder
+            zoom: 7,
+            maxZoom: 16                   //closest to earth as possible
+        },
+        controller: true,
+        layers: [geojsonLayer]
+    })
+    function color(code) {
+        const index = counties.indexOf(code)
+        const rgb = d3.rgb(d3.interpolateTurbo(index/14))
+        return [rgb.r, rgb.g, rgb.b]
+    }
+})
+    
+</script>
+</body>
+</html>

@@ -54,6 +54,15 @@
             .attr('cx', d=>xScale(d.Date))
             .attr('cy', d=>yScale(d.Population))
             .attr('r',4)
+            // .transition()
+            // .delay(3000)
+            // .duration(2000)
+
+            // svg.selectAll('#canvas')
+            // .transition()
+            // .delay(3000)
+            // .duration(2000)
+
 
         const xAxis = d3.axisBottom().scale(xScale);
         const yAxis = d3.axisLeft().scale(yScale);
