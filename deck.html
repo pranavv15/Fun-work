@@ -26,8 +26,7 @@
 <div id="container"></div>
 <script>
     d3.json("Sample_Data-main/MA_GeoJSON.json").then(data => {
-    
-    let counties = [... new Set(data.features.map(d => d["properties"]["FIPS_STCO"]))]
+    let counties = [... new Set(data.features.map(d => d["properties"]["FIPS_STCO"]))]  // creates a set of the unique fips values
     const {DeckGL, GeoJsonLayer} = deck;
     const geojsonLayer = new GeoJsonLayer ({                //creating the layers
         data: data,
@@ -39,8 +38,8 @@
         opacity: 0.8
     })
     new DeckGL({                        //rendering the data
-        mapboxApiAccessToken: token,
-        mapStyle:'mapbox://styles/mapbox/streets-v11',
+        mapboxApiAccessToken: token,                        //a token of the created mapbox vis, part of the whole schebang
+        mapStyle:'mapbox://styles/mapbox/streets-v11',     //creates a base map on which we color our vis, created using mapbox.
         container: "container",         // the visualization should be contained inside this
         initialViewState : {            //after the data is rendered, this helps us decide what our initial point of view is
             longitude: -71.6,
@@ -49,7 +48,7 @@
             maxZoom: 16                   //closest to earth as possible
         },
         controller: true,
-        layers: [geojsonLayer]
+        layers: [geojsonLayer]              // passing layers
     })
     function color(code) {
         const index = counties.indexOf(code)
