@@ -1,0 +1,107 @@
+<html lang="en"> 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <title>Sample Website with bootstrap</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script> 
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+
+        .heading{
+            font-family: sans-serif;
+            text-align: center;
+        }
+
+        body{
+        
+            margin: 2rem;
+        }
+
+        .row{
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+
+    </style>
+
+</head>    
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+
+                    <!-- header -->
+
+                <div class="jumbotron">
+
+                    <h3 class="heading">
+                        My Website!
+                    </h3>
+                </div>    
+            </div>
+         </div>
+
+        <div class="row">
+            <div class="col-12">
+
+                    <!-- nav nav-pills -->
+
+                <ul class=" nav nav-pills">
+
+                    <li class="nav-item"><a class="nav-link" active href="#home" data-toggle="pill"> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about" data-toggle="pill"> About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact" data-toggle="pill"> Contact</a></li>
+
+                </ul>    
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs">
+
+                    <li class="nav-item"><a class="nav-link" show active href="#pane-1" data-toggle="tab">Add Data</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pane-2" data-toggle="tab">View Data</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pane-3" data-toggle="tab">Export Data</a></li>
+
+
+
+                </ul>
+
+            </div>
+
+
+            <div class="tab-content">
+                <div id="pane-1" class="tab-pane show active">
+                   <div class="jumbotron">
+                        <h3>This is Pane-1</h3>
+                    </div>
+                </div>
+
+                <div id="pane-2" class="tab-pane">
+                    <div class="jumbotron">
+                        <h3>This is Pane-2</h3>
+                    </div>
+                </div>
+
+                <div id="pane-3" class="tab-pane">
+                    <div class="jumbotron">
+                        <h3>This is Pane-3</h3>
+                    </div>
+                </div>
+
+
+
+            </div> </div>
+
+        </div>  
+
+
+    </div>
+</body>
+</html>
