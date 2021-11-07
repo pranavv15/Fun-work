@@ -84,17 +84,17 @@
                 const oneState = casesLineGenerator(state_data_filtered.stateData)
                 
                 // create and append a new svg element for each state
-                console.log(state_data_filtered)
+                console.log(state_data_filtered.slope)
                 const svg = d3.select("body")
                                 .append("svg")
                                 .attr("viewBox",[0, 0, svgSize.width, svgSize.height])
                 const canvas = svg.append("g").attr("class","canvas")
 
-                if(state_data_filtered.slope <=0 ){
+                if(state_data_filtered.slope <= 0 ){
                     lineChart(canvas,oneState,d,"green")
                 }
                 else{
-                lineChart(canvas,oneState,d,"red")
+                    lineChart(canvas,oneState,d,"red")
                 }
             })
             
