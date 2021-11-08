@@ -11,10 +11,11 @@
     <script src="https://d3js.org/topojson.v1.min.js"></script>
 
     <style>
-        /* svg{
-            width: 20vw;
-            height: 20vh;
-        } */
+        
+        #tooltipSvg{
+            width: 250px;
+            height: 150px;
+        }
         #mapSvg{
             width: 90vw;
             height: 90vh;
@@ -23,11 +24,32 @@
             font-family: sans-serif;
             font-size: 70pt;
         }
+        #tooltip{
+            width: 250px;
+            height: 150px;
+            padding: 10px;
+            position: absolute;
+            opacity: 1;
+            background-color: lightblue;
+        }
     </style>
 
 </head>
 <body>
+    <div id="tooltip"></div>
     <script>
+        
+        // Defining the scales
+        const margin = {top:100,left:100,bottom:100,right:100}
+        const svgSize = {width:1200,height:1000}
+
+        const svg = d3.select("#tooltip")
+                        .append("svg")
+                        .attr("id","tooltipSvg")
+                        .attr("viewBox",[0, 0, svgSize.width, svgSize.height])
+        const canvas = svg.append("g").attr("class","canvas")
+        
+
         Promise.all([
             d3.json("https://raw.githubusercontent.com/umassdgithub/Sample_Data/main/cb_2018_us_state_20m_topo.json"),
             d3.csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/rolling-averages/us-states.csv", 
@@ -61,14 +83,13 @@
                         deaths.push(lastDateDeath(data,d))
                     })
 
-                        // console.log(deaths)
-
                     // now create color Scale for it after coming back from work
+                    let colorScale = d3.scaleSequential()
+                                        .interpolator(d3.interpolateOrRd)
+                                        .domain(d3.extent(deaths,d=> d))
+
                     
                     lastDateDeath(data,state = "California")
-                    
-                    
-                    
                     
                     const mapMargin = {top:100,left:100,bottom:100,right:100}
                     const mapSVGSize = {width:1200,height:1000}
@@ -91,33 +112,28 @@
                             .enter()
                             .append("path")
                             .attr("d",d=> geoPath(d))
-                            .attr("fill","none")
-                            .attr("stroke","black")
+                            .attr("fill",d=>{
+                                return colorScale(lastDateDeath(data,d.properties.NAME))
+                            })
+                            .attr("stroke","none")
+                            .on("mouseenter", (m,d)=>{
+                                plotLineChart(d.properties.NAME)
+                                d3.select("#tooltip")
+                                    .style("top",m.clientY+"px")
+                                    .style("left",(m.clientX-100)+"px")
+                                    .style("opacity",.85)
+                            })
                 }        
                 addMap(topoData,data)
                 
                 
             ///////////////////////////////////////////////////////////////////////////////////    
             
-            
-                // Defining the scales
-                const margin = {top:100,left:100,bottom:100,right:100}
-                const svgSize = {width:1200,height:1000}
-
-            
-            
-                // console.log(data)
-                const svg = d3.select("body").append("svg").attr("viewBox",[0, 0, svgSize.width, svgSize.height])
-                const canvas = svg.append("g").attr("class","canvas")
-                // const states = [...new Set(data.map(d=> d.state))]      // convert a set into a state using ellipses
-                // console.log(states)
                 function state_data(dataset, statename='Washington'){
                     let st = dataset.filter(d=> d.state===statename)
                     let slope = ss.linearRegression(st.slice(-10).map((d,i)=> [i,d.cases_avg])).m
                     return {stateData:st, slope:slope};
                 }
-                // console.log(state_data(data,statename="California"))
-
                 
                 const xScale = d3.scaleTime()
                                     .domain(d3.extent(data, d=> d.date))
@@ -130,9 +146,9 @@
 
 
                 const casesLineGenerator = d3.line().x(d=> xScale(d.date)).y(d=>yScale(d.cases_avg))
-                // const deathLineGenerator = d3.line().x(d=> d.date).y(d=>d.deaths_avg)
 
                 function lineChart(canvas,data,Title,linecolor){
+                    canvas.selectAll("*").remove()
                     canvas.append("text")
                             .attr("class","title")
                             .attr("x",(svgSize.width-margin.left-margin.right)/2)
@@ -146,25 +162,18 @@
                             .attr("stroke-width","3")  
                 } 
     
-                // states.forEach(d=> {
-                //     // get data for one state
-                //     let state_data_filtered = state_data(data,d)
-                //     const oneState = casesLineGenerator(state_data_filtered.stateData)
-                    
-                //     // create and append a new svg element for each state
-                //     console.log(state_data_filtered.slope)
-                //     const svg = d3.select("body")
-                //                     .append("svg")
-                //                     .attr("viewBox",[0, 0, svgSize.width, svgSize.height])
-                //     const canvas = svg.append("g").attr("class","canvas")
+                function plotLineChart(state) {
+                    // get data for one state
+                    let state_data_filtered = state_data(data,state)
+                    const oneState = casesLineGenerator(state_data_filtered.stateData)
 
-                //     if(state_data_filtered.slope <= 0 ){
-                //         lineChart(canvas,oneState,d,"green")
-                //     }
-                //     else{
-                //         lineChart(canvas,oneState,d,"red")
-                //     }
-                // })
+                    if(state_data_filtered.slope <= 0 ){
+                        lineChart(canvas,oneState,state,"green")
+                    }
+                    else{
+                        lineChart(canvas,oneState,state,"red")
+                    }
+                }
                 
                 
             
