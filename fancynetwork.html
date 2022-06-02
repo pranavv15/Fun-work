@@ -84,7 +84,7 @@
         .attr("fill",d=>colorScale(d.group))
         .attr("class",d=> "g_"+d.group)
 
-        // Adding mouse events
+        // // Adding mouse events
         gNodes.on("mouseenter",(m,d)=> {
             d3.selectAll("circle").classed("inActive",true)  
             d3.selectAll(".g_"+d.group.toString()).classed("inActive",false)  
@@ -104,11 +104,16 @@
         // <!-- Add force simulator object to the project -->
                     
         let fsim = d3.forceSimulation(data.nodes)
+                // forceCenter (for setting the center of gravity of the system)
+                // forceManyBody (for making elements attract or repel one another)
+                // forceCollide (for preventing elements overlapping)
+                // forceX and forceY (for attracting elements to a given point)
+                // forceLink (for creating a fixed distance between connected elements)
                     
                 // <!-- Define the forces needed -->
                     .force("center",d3.forceCenter(width/2,height/2))       // to bring the nodes in the center of the svg element
                     .force("links",d3.forceLink(data.links)
-                    .distance(d=>d.value*35)
+                    .distance(d=>d.value*50)
                     .strength(0.1))
                     
                     .force("collide",d3.forceCollide()

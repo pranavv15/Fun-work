@@ -93,7 +93,14 @@
                     
                     const mapMargin = {top:100,left:100,bottom:100,right:100}
                     const mapSVGSize = {width:1200,height:1000}
-                    let geojson = topojson.feature(topoData, topoData.objects.cb_2018_us_state_20m)
+                    let geojson = topojson.feature(topoData, topoData.objects.cb_2018_us_state_20m) //returns geojson which has a sort of path for every say county in the topojson data
+                    /*the data stored in topojsonDataSet is what you said, 
+                    a mathematical description of the map we want to draw,
+                    but topojson just generates that information. 
+                    I don't know how the information it returns is formatted, 
+                    but it's mathematical. It doesn't have to go through D3 
+                    to generate shapes, and in theory (if you're Data from TNG)
+                    you could use the data returned by topojson to draw a map  by hand*/
                     
                     //create projection
                     const projection = d3.geoAlbersUsa().fitSize([mapSVGSize.width,mapSVGSize.height],geojson)     
@@ -118,6 +125,7 @@
                             .attr("stroke","none")
                             .on("mouseenter", (m,d)=>{
                                 plotLineChart(d.properties.NAME)
+                                console.log(d)
                                 d3.select("#tooltip")
                                     .style("top",m.clientY+"px")
                                     .style("left",(m.clientX-100)+"px")

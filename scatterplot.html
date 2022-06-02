@@ -96,7 +96,7 @@
                 .attr('fill',d=>regions(d.Region))
                 .attr("opacity",0.5)
                 .on("mouseover",(m,d) => {
-                    //console.log(m)
+                    console.log(m)
                     //console.log(d)
                     d3.select("#tooltip")
                         .style("top",`${m.clientY}px`)
